@@ -9,6 +9,7 @@ class Job:
         self.responsibilities = []
         self.requirements = []
         self.preferred_requirements = []
+        self.posting_link = ''
 
     def __str__(self):
         s = "Title: " + str(self.title) + "\n"
@@ -26,5 +27,7 @@ class Job:
             s += "Preferred Requirements:\n"
             for prq in self.preferred_requirements:
                 s += "- " + str(prq) + "\n"
+
+        s += "Link: " + str(self.posting_link) + "\n"
 
         return s

@@ -35,7 +35,6 @@ class FacebookCrawler:
         job_urls = soup.find_all('a', href=re.compile("^/careers/jobs/"))
         for job_url in job_urls:
             url = base_url + job_url['href']
-            print url
             FacebookJobParser.parse_job(url)
 
 
@@ -84,6 +83,7 @@ class FacebookJobParser:
                 job.preferred_requirements.append(prq.string)
 
         job.company = "Facebook, Inc."
+        job.posting_link = url
 
         print job
 
