@@ -46,6 +46,9 @@ class FacebookJobParser:
         title = soup.find("h2")
         job.title = title.string
 
+        category = soup.find('h3')
+        job.category = category.string
+
         location = title.nextSibling
         job.location = location.string
 
