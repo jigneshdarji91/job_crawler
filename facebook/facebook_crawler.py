@@ -57,44 +57,83 @@ class FacebookJobParser:
     def parse_job(url):
         f = Fetcher.fetch_page(url)
         soup = BeautifulSoup(f.content, 'html5lib')
+
         job = Job()
+        job.title                   = FacebookJobParser.get_title(soup)
+        job.category                = FacebookJobParser.get_category(soup)
+        job.description             = FacebookJobParser.get_description(soup)
+        job.requirements            = FacebookJobParser.get_requirements(soup)
+        job.responsibilities        = FacebookJobParser.get_responsibilities(soup)
+        job.preferred_requirements  = FacebookJobParser.get_preferred_requirements(soup)
+        job.company                 = FacebookJobParser.get_company(soup)
+        job.posting_link            = url
 
-        title = soup.find("h2")
-        job.title = title.string
+        print job
+        return job
 
-        category = soup.find('h3')
-        job.category = category.string
+    @staticmethod
+    def get_title(soup):
+        return soup.find("h2").string
 
+    @staticmethod
+    def get_company(soup):
+        return "Facebook, Inc."
+
+    @staticmethod
+    def get_location(soup):
+        title = soup.find('h2')
+        return title.nextSibling.string
+
+    @staticmethod
+    def get_category(soup):
+        return soup.find('h3')
+
+    @staticmethod
+    def get_description(soup):
+        desc = []
+        title = soup.find('h2')
         location = title.nextSibling
-        job.location = location.stringf
-
         description = location.nextSibling
-        job.description.append(description.string)
-        description = description.nextSibling
-        job.description.append(str(description.string))
+        if description:
+            desc.append(description.string)
+            description = description.nextSibling
+            if description:
+                desc.append(description.string)
+        return desc
 
-        if soup.find('h4', text='Responsibilities'):
-            responsibilities = soup.find('h4', text="Responsibilities")\
-                .nextSibling.find_all('li')
-            for responsibility in responsibilities:
-                job.responsibilities.append(responsibility.string)
-
+    @staticmethod
+    def get_requirements(soup):
+        rq = []
         if soup.find('h4', text="Minimum Qualification"):
             requirements = soup.find('h4', text="Minimum Qualification")\
                 .nextSibling.find_all('li')
             for requirement in requirements:
-                job.requirements.append(requirement.string)
+                rq.append(requirement.string)
 
+        return rq
+
+    @staticmethod
+    def get_responsibilities(soup):
+        r = []
+        if soup.find('h4', text='Responsibilities'):
+            responsibilities = soup.find('h4', text="Responsibilities")\
+                .nextSibling.find_all('li')
+            for responsibility in responsibilities:
+                r.append(responsibility.string)
+
+        return r
+
+    @staticmethod
+    def get_preferred_requirements(soup):
+        prq = []
         if soup.find('h4', text="Preferred Qualifications"):
             pref_requirements = soup.find('h4', text="Preferred Qualifications")\
                 .nextSibling.find_all('li')
             for prq in pref_requirements:
-                job.preferred_requirements.append(prq.string)
+                prq.append(prq.string)
 
-        job.company = "Facebook, Inc."
-        job.posting_link = url
+        return prq
 
-        return job
 
 
 FacebookCrawler.fetch_jobs_all()
