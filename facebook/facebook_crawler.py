@@ -5,12 +5,15 @@ from bs4 import BeautifulSoup
 import requests
 import urllib2
 import time
+import re
 import os
 import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
 sys.path.append(os.path.abspath(os.path.join(__file__, "../../")))
 from common.jobs import Job
 
-base_url = 'https://www.facebook.com/careers/university'
+base_url = 'https://www.facebook.com'
 eng_jobs_url = 'https://www.facebook.com/careers/university/grads/engineering'
 sample_job_url = 'https://www.facebook.com/careers/jobs/a0I1200000JZKUFEA5'
 
@@ -19,13 +22,20 @@ class FacebookCrawler:
     def __init__(self):
         self.jobs = {}
 
-    def fetch_jobs(self):
+    @staticmethod
+    def fetch_jobs(url):
         while True:
-            f = requests.get(eng_jobs_url)
+            f = requests.get(url)
             if f.status_code < 500:
                 break
 
-        soup = BeautifulSoup(f, 'html5lib')
+        soup = BeautifulSoup(f.content, 'html5lib')
+        job_urls = soup.find_all('a', href=re.compile("^/careers/jobs/"))
+        for job_url in job_urls:
+            url = base_url + job_url['href']
+            print url
+            FacebookJobParser.parse_job(url)
+
 
 
 class FacebookJobParser:
@@ -50,12 +60,13 @@ class FacebookJobParser:
         job.category = category.string
 
         location = title.nextSibling
-        job.location = location.string
+        job.location = location.stringf
 
         description = location.nextSibling
         job.description = description.string
         description = description.nextSibling
-        job.description += "\n" + str(description.string)
+        if description.string:
+            job.description += "\n" + str(description.string)
 
         responsibilities = description.find_next('ul').find_all('li')
         for responsibility in responsibilities:
@@ -70,4 +81,4 @@ class FacebookJobParser:
 
 
 
-FacebookJobParser.parse_job(sample_job_url.encode('utf-8'))
+FacebookCrawler.fetch_jobs(eng_jobs_url)
