@@ -15,7 +15,9 @@ from common.jobs import Job
 
 base_url = 'https://www.facebook.com'
 eng_jobs_url = 'https://www.facebook.com/careers/university/grads/engineering'
+eng_internships_url = 'https://www.facebook.com/careers/university/internships/engineering'
 sample_job_url = 'https://www.facebook.com/careers/jobs/a0I1200000JZKUFEA5'
+
 
 class FacebookCrawler:
 
@@ -35,7 +37,6 @@ class FacebookCrawler:
             url = base_url + job_url['href']
             print url
             FacebookJobParser.parse_job(url)
-
 
 
 class FacebookJobParser:
@@ -63,22 +64,20 @@ class FacebookJobParser:
         job.location = location.stringf
 
         description = location.nextSibling
-        job.description = description.string
+        job.description.append(description.string)
         description = description.nextSibling
-        if description.string:
-            job.description += "\n" + str(description.string)
+        job.description.append(str(description.string))
 
-        responsibilities = description.find_next('ul').find_all('li')
+        responsibilities = soup.find('h4', text="Responsibilities").nextSibling.find_all('li')
         for responsibility in responsibilities:
             job.responsibilities.append(str(responsibility.string))
 
-        requirements = description.find_next('ul').find_next('ul').find_all('li')
+        requirements = soup.find('h4', text="Minimum Qualification").nextSibling.find_all('li')
         for requirement in requirements:
             job.requirements.append(str(requirement.string))
         job.company = "Facebook, Inc."
 
         print job
 
-
-
-FacebookCrawler.fetch_jobs(eng_jobs_url)
+FacebookCrawler.fetch_jobs(eng_internships_url)
+# FacebookJobParser.parse_job(sample_job_url)

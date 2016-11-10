@@ -3,7 +3,7 @@ class Job:
     def __init__(self):
         self.title = ''
         self.company = ''
-        self.description = ''
+        self.description = []
         self.category = ''
         self.location = ''
         self.responsibilities = []
@@ -15,7 +15,7 @@ class Job:
         s += "Category: " + str(self.category) + "\n"
         s += "Description: " + str(self.description) + "\n"
         s += "Responsibilities: \n"
-        for r in self.requirements:
+        for r in self.responsibilities:
             s += "- " + str(r) + "\n"
         s += "Requirements:\n"
         for rq in self.requirements:
