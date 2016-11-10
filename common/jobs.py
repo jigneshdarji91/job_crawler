@@ -8,6 +8,7 @@ class Job:
         self.location = ''
         self.responsibilities = []
         self.requirements = []
+        self.preferred_requirements = []
 
     def __str__(self):
         s = "Title: " + str(self.title) + "\n"
@@ -20,4 +21,10 @@ class Job:
         s += "Requirements:\n"
         for rq in self.requirements:
             s += "- " + str(rq) + "\n"
+
+        if self.preferred_requirements:
+            s += "Preferred Requirements:\n"
+            for prq in self.preferred_requirements:
+                s += "- " + str(prq) + "\n"
+
         return s

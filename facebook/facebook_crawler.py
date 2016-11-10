@@ -68,16 +68,25 @@ class FacebookJobParser:
         description = description.nextSibling
         job.description.append(str(description.string))
 
-        responsibilities = soup.find('h4', text="Responsibilities").nextSibling.find_all('li')
-        for responsibility in responsibilities:
-            job.responsibilities.append(str(responsibility.string))
+        if soup.find('h4', text='Responsibilities'):
+            responsibilities = soup.find('h4', text="Responsibilities").nextSibling.find_all('li')
+            for responsibility in responsibilities:
+                job.responsibilities.append(str(responsibility.string))
 
-        requirements = soup.find('h4', text="Minimum Qualification").nextSibling.find_all('li')
-        for requirement in requirements:
-            job.requirements.append(str(requirement.string))
+        if soup.find('h4', text="Minimum Qualification"):
+            requirements = soup.find('h4', text="Minimum Qualification").nextSibling.find_all('li')
+            for requirement in requirements:
+                job.requirements.append(str(requirement.string))
+
+        if soup.find('h4', text="Preferred Qualifications"):
+            preferred_requirements = soup.find('h4', text="Preferred Qualifications").nextSibling.find_all('li')
+            for prq in preferred_requirements:
+                job.preferred_requirements.append(str(prq.string))
+
         job.company = "Facebook, Inc."
 
         print job
 
 FacebookCrawler.fetch_jobs(eng_internships_url)
 # FacebookJobParser.parse_job(sample_job_url)
+# FacebookJobParser.parse_job('https://www.facebook.com/careers/jobs/a0I1200000JXbY9EAL/')
