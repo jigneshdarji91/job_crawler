@@ -71,17 +71,17 @@ class FacebookJobParser:
         if soup.find('h4', text='Responsibilities'):
             responsibilities = soup.find('h4', text="Responsibilities").nextSibling.find_all('li')
             for responsibility in responsibilities:
-                job.responsibilities.append(str(responsibility.string))
+                job.responsibilities.append(responsibility.string)
 
         if soup.find('h4', text="Minimum Qualification"):
             requirements = soup.find('h4', text="Minimum Qualification").nextSibling.find_all('li')
             for requirement in requirements:
-                job.requirements.append(str(requirement.string))
+                job.requirements.append(requirement.string)
 
         if soup.find('h4', text="Preferred Qualifications"):
             preferred_requirements = soup.find('h4', text="Preferred Qualifications").nextSibling.find_all('li')
             for prq in preferred_requirements:
-                job.preferred_requirements.append(str(prq.string))
+                job.preferred_requirements.append(prq.string)
 
         job.company = "Facebook, Inc."
 
